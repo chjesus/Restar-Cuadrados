@@ -11,16 +11,21 @@ using namespace std;
 class Principal{
 	vector<int> opcs;
 	vector<int> auxPos;
-	vector<int> playerGana; //Jugador Puede Ganar en el siguiente turno
 	vector<int> pcGana; //Pc Puede Ganar en el siguiente Turno
+	vector<int> playerGana; //Jugador Puede Ganar en el siguiente turno
+	
 	int datoInit;
 	char resp;
+	
 	public:
 		void main();
 		void llenarVector(int datoInit);
 		void initJugador();
 		void jugar();
-		int validar(int dataInicial,int aux);
+		
+		int validarJugada(int op);
+		int min(int datoInitAux,int op);
+		int max(int datoInitAux,int op);
 		
 		int player();
 		int pc();
@@ -108,8 +113,8 @@ void Principal::jugar(){
 		}while(datoInit!=0);
 	}
 	
-	if(win==1) cout<<endl<<"Gano el Jugador";
-	else cout<<endl<<"Gano la Maquina;";
+	if(win==1) cout<<endl<<endl<<"Gano el Jugador";
+	else cout<<endl<<endl<<"Gano la Maquina;";
 }
 
 int Principal::player(){
@@ -118,6 +123,7 @@ int Principal::player(){
 	bool band;
 	
 	do{
+		cout<<endl<<endl<<"Tu Turno";
 		cout<<endl<<endl<<"Raiz: "<<datoInit<<" | Tablero: "<<endl;
 		for(int i=0;i<opcs.size();i++){
 			cout<<opcs[i]<<"^2  ";
@@ -150,58 +156,95 @@ int Principal::pc(){
 	int datoInitAux;
 	int numOpc;
 	bool band;
-	int aux, auxopc;
+	
+	int auxopc;
+	int minimun = -999;
 	
 	srand(time(NULL));
-
-	playerGana.clear();
-	pcGana.clear();
 	
+	cout<<endl<<endl<<"Juega la Maquina";
 	cout<<endl<<endl<<"Raiz: " << datoInit<<"| Tablero: "<<endl;
 	for(int i=0;i<opcs.size();i++){
 		cout<<opcs[i]<<"^2  ";
 	}	
 		for(int i=0;i<opcs.size();i++){
-			if(validar(datoInit,opcs[i])==0){
+			if(validarJugada(opcs[i])==0){
 				numOpc = opcs[i];
 				break;
-			}else if(validar(datoInit,opcs[i+1])==1){
-				playerGana.push_back(opcs[i]);
-			}else if(validar(datoInit,opcs[i+1])==2){
-				pcGana.push_back(opcs[i]);
-			}
-		}
-
-		if(datoInit!=0){
-			if(playerGana.size()==0){
-				numOpc = rand()%pcGana.size();
-			}else if(playerGana.size()>0){
-				numOpc = rand()%playerGana.size();
-			}
+			}else if(validarJugada(opcs[i])==1){
+				datoInitAux = datoInit;
+				datoInit -= pow(opcs[i],2);
+				llenarVector(datoInit);
+				auxopc = Principal::min(datoInit,opcs[i]);
+				if(auxopc>minimun){
+					minimun = auxopc;
+					numOpc = opcs[i];
+				}
+				datoInit = datoInitAux;
+				llenarVector(datoInit);
+			}/*else if(validarJugada(opcs[i])==-1){
+//				int r = rand()%opcs.size();
+//				numOpc = opcs[r];
+//				break;			
+			}*/
 		}
 
 	datoInitAux = datoInit;
-	datoInit -= numOpc*numOpc;
+	datoInit -= pow(numOpc,2);
 	cout<<endl<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
 	
 	if(datoInit==0) return 2;
 	else return -1;
 }
 
-int Principal::validar(int datoInicial,int aux){
-	int nuevoDatoInit = datoInicial - (aux*aux);
-	int opciones = 1;
+int Principal::validarJugada(int op){
+	if(pow(op,2)==datoInit) return 0;
+//	if(opcs.size()>5) return -1;
+	return 1;
+}
+
+int Principal::min(int nuevaRaiz,int op){
+	if(nuevaRaiz==0 || datoInit==0) return 0;
 	
-	if(aux*aux == datoInicial) return 0;
+	int auxopc;
+	int maximun = 1001;
+		for(int i=0;i<opcs.size();i++){
+			if(validarJugada(opcs[i])==0){
+				op = opcs[i];
+				break;
+			}else if(validarJugada(opcs[i])==1){
+				datoInit = nuevaRaiz;
+				datoInit -= pow(opcs[i],2);
+				llenarVector(datoInit);
+				auxopc = Principal::max(datoInit,opcs[i]);
+				if(auxopc<maximun){
+					maximun = auxopc;
+					op = opcs[i];
+				}
+			}
+		}
+	return maximun;
+}
+int Principal::max(int nuevaRaiz,int op){
+	if(nuevaRaiz==0 || datoInit==0) return 0;
 	
-	auxPos.clear();
-	while(opciones*opciones<=nuevoDatoInit){
-		auxPos.push_back(opciones);
-		opciones++;
-	}
-	
-	if(nuevoDatoInit-pow(auxPos[auxPos.size()-1],2)==1){
-		return 1;
-	}else return 2;
+	int auxopc;
+	int minimun = -999;
+		for(int i=0;i<opcs.size();i++){
+			if(validarJugada(opcs[i])==0){
+				op = opcs[i];
+				break;
+			}else if(validarJugada(opcs[i])==1){
+				datoInit = nuevaRaiz;
+				datoInit -= pow(opcs[i],2);
+				llenarVector(datoInit);
+				auxopc = Principal::min(datoInit,opcs[i]);
+				if(auxopc>minimun){
+					minimun = auxopc;
+					op = opcs[i];
+				}
+			}
+		}
+	return minimun;
 }
 #endif
