@@ -10,11 +10,14 @@ using namespace std;
 class Principal{
 	vector<int> opcs;
 	int datoInit;
+	char resp;
 	public:
 		void main();
 		void llenarVector(int datoInit);
 		void initJugador();
 		void jugar();
+		int player();
+		int pc();
 };
 
 void Principal::main(){
@@ -71,7 +74,7 @@ void Principal::main(){
 
 void Principal::llenarVector(int datoInit){
 	int opciones = 1;
-	
+	opcs.clear();
 	while(opciones*opciones<=datoInit){
 		opcs.push_back(opciones);
 		opciones++;
@@ -79,9 +82,64 @@ void Principal::llenarVector(int datoInit){
 }
 
 void Principal::jugar(){
-	cout<<"Tablero: "<<endl;
-	for(int i=0;i<opcs.size();i++){
-		cout<<opcs[i]<<"^2  ";
+	int win;
+	cout<<"Deseas Iniciar usted? s/n: ";
+	cin>>resp;
+	if(resp=='s' || resp=='S'){
+		do{
+			if(datoInit!=0) win = Principal::player();
+			Principal::llenarVector(datoInit);
+			if(datoInit!=0) win = Principal::pc();
+			Principal::llenarVector(datoInit);
+		}while(datoInit!=0);
+	}else{
+		do{
+			if(datoInit!=0) win = Principal::pc();
+			Principal::llenarVector(datoInit);
+			if(datoInit!=0) win = Principal::player();
+			Principal::llenarVector(datoInit);
+		}while(datoInit!=0);
 	}
+	
+	if(win==1) cout<<endl<<"Gano el Jugador";
+	else cout<<"Gano la Maquina;";
+}
+
+int Principal::player(){
+	int datoInitAux;
+	int numOpc;
+	bool band;
+	
+	do{
+		cout<<endl<<endl<<"Raiz: "<<datoInit<<" | Tablero: "<<endl;
+		for(int i=0;i<opcs.size();i++){
+			cout<<opcs[i]<<"^2  ";
+		}
+		do{
+			cout<<endl;
+			cout<<"Elija alguna Opcion: ";
+			cin>>numOpc;
+			if(numOpc>opcs[opcs.size()-1]) cout<<endl<<"Error - Dato Invalido!!"<<endl;
+		}while(numOpc>opcs[opcs.size()-1]);
+		
+		for(int i=0;i<opcs.size();i++){
+			if(opcs[i]==numOpc){
+				band = true;
+				break;
+			}
+		}
+	}while(!band);
+	
+	datoInitAux = datoInit;
+	datoInit -= numOpc*numOpc;
+	cout<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
+	
+	if(datoInit==0) return 1;
+	else return -1;
+}
+
+int Principal::pc(){
+	
+	return -1;
 }
 #endif
