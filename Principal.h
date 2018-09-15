@@ -5,6 +5,7 @@
 #include <conio.h>
 #include <vector>
 #include <time.h>
+#include <math.h>
 
 using namespace std;
 class Principal{
@@ -102,7 +103,7 @@ void Principal::jugar(){
 	}
 	
 	if(win==1) cout<<endl<<"Gano el Jugador";
-	else cout<<"Gano la Maquina;";
+	else cout<<endl<<"Gano la Maquina;";
 }
 
 int Principal::player(){
@@ -140,6 +141,49 @@ int Principal::player(){
 
 int Principal::pc(){
 	
-	return -1;
+	int datoInitAux;
+	int numOpc;
+	bool band;
+	int aux, auxopc;
+	
+	do{
+		cout<<endl<<endl<<"Raiz: " << datoInit<<"| Tablero: "<<endl;
+		for(int i=0;i<opcs.size();i++){
+			cout<<opcs[i]<<"^2  ";
+		}
+		do{
+			cout << endl;
+			cout << "El computador esta pensando una opcion...";
+			getch();
+			
+			aux = datoInit;
+			auxopc = (aux-datoInit);
+			
+				if(auxopc==0)
+				numOpc = sqrt(aux);
+				
+				cout << "\n\nEl computador ha escogido el numero: " << numOpc << endl;
+					
+				
+				
+			
+			if(numOpc>opcs[opcs.size()-1]) cout<<endl<<"Error - Dato Invalido!!"<<endl;
+			}while(numOpc>opcs[opcs.size()-1]);
+			
+			
+		for(int i=0;i<opcs.size();i++){
+			if(opcs[i]==numOpc){
+				band = true;
+				break;
+			}
+		}
+	}while(!band);
+	
+	datoInitAux = datoInit;
+	datoInit -= numOpc*numOpc;
+	cout<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
+	
+	if(datoInit==0) return 2;
+	else return -1;
 }
 #endif
