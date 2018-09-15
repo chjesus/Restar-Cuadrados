@@ -140,6 +140,7 @@ int Principal::player(){
 
 int Principal::pc(){
 	
-	return -1;
+	if(datoInit==0) return 1;
+	else return -1;
 }
 #endif
