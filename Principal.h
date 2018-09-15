@@ -5,10 +5,14 @@
 #include <conio.h>
 #include <vector>
 #include <time.h>
+#include <math.h>
 
 using namespace std;
 class Principal{
 	vector<int> opcs;
+	vector<int> auxPos;
+	vector<int> playerGana; //Jugador Puede Ganar en el siguiente turno
+	vector<int> pcGana; //Pc Puede Ganar en el siguiente Turno
 	int datoInit;
 	char resp;
 	public:
@@ -16,8 +20,11 @@ class Principal{
 		void llenarVector(int datoInit);
 		void initJugador();
 		void jugar();
+		int validar(int dataInicial,int aux);
+		
 		int player();
 		int pc();
+		
 };
 
 void Principal::main(){
@@ -102,7 +109,7 @@ void Principal::jugar(){
 	}
 	
 	if(win==1) cout<<endl<<"Gano el Jugador";
-	else cout<<"Gano la Maquina;";
+	else cout<<endl<<"Gano la Maquina;";
 }
 
 int Principal::player(){
@@ -140,7 +147,61 @@ int Principal::player(){
 
 int Principal::pc(){
 	
-	if(datoInit==0) return 1;
+	int datoInitAux;
+	int numOpc;
+	bool band;
+	int aux, auxopc;
+	
+	srand(time(NULL));
+
+	playerGana.clear();
+	pcGana.clear();
+	
+	cout<<endl<<endl<<"Raiz: " << datoInit<<"| Tablero: "<<endl;
+	for(int i=0;i<opcs.size();i++){
+		cout<<opcs[i]<<"^2  ";
+	}	
+		for(int i=0;i<opcs.size();i++){
+			if(validar(datoInit,opcs[i])==0){
+				numOpc = opcs[i];
+				break;
+			}else if(validar(datoInit,opcs[i+1])==1){
+				playerGana.push_back(opcs[i]);
+			}else if(validar(datoInit,opcs[i+1])==2){
+				pcGana.push_back(opcs[i]);
+			}
+		}
+
+		if(datoInit!=0){
+			if(playerGana.size()==0){
+				numOpc = rand()%pcGana.size();
+			}else if(playerGana.size()>0){
+				numOpc = rand()%playerGana.size();
+			}
+		}
+
+	datoInitAux = datoInit;
+	datoInit -= numOpc*numOpc;
+	cout<<endl<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
+	
+	if(datoInit==0) return 2;
 	else return -1;
+}
+
+int Principal::validar(int datoInicial,int aux){
+	int nuevoDatoInit = datoInicial - (aux*aux);
+	int opciones = 1;
+	
+	if(aux*aux == datoInicial) return 0;
+	
+	auxPos.clear();
+	while(opciones*opciones<=nuevoDatoInit){
+		auxPos.push_back(opciones);
+		opciones++;
+	}
+	
+	if(nuevoDatoInit-pow(auxPos[auxPos.size()-1],2)==1){
+		return 1;
+	}else return 2;
 }
 #endif
