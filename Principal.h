@@ -178,7 +178,7 @@ void Principal::jugar(){
 }
 
 int Principal::player(){
-//	system("color F1");
+
 	int datoInitAux;
 	int numOpc=0;
 	bool band;
@@ -217,7 +217,6 @@ int Principal::player(){
 
 int Principal::pc(){
 	
-//	system("color F4");
 	int datoInitAux=0;
 	int auxRandom = 0;
 	int minimun = 0;
