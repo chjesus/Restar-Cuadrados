@@ -24,9 +24,7 @@ class Principal{
 		void jugar();
 		
 		int validarJugada(int op);
-		
 		int min(int datoInitAux);
-		
 		int player();
 		int pc();
 		
@@ -82,6 +80,11 @@ void Principal::main(){
 	}while(band);
 	
 	cout<<"Fin del Programa.";
+}
+
+int Principal::validarJugada(int op){
+	if(pow(op,2)==datoInit) return 0;
+	else return 1;
 }
 
 void Principal::llenarVector(int datoInit){
@@ -212,14 +215,7 @@ int Principal::pc(){
 	else return -1;
 }
 
-int Principal::validarJugada(int op){
-	if(pow(op,2)==datoInit) return 0;
-	else return 1;
-}
-
 int Principal::min(int nuevaRaiz){
-//	if(nuevaRaiz==0) return 1;
-
 		for(int i=0;i<opcs.size();i++){
 			if(validarJugada(opcs[opcs.size()-1])==0){
 				return -1;
