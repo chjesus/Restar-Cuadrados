@@ -195,7 +195,7 @@ int Principal::pc(){
 	datoInit -= pow(numOpc,2);
 	cout<<endl<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
 	
-//	bandAux = true;
+	//bandAux = true;//////
 	
 	if(datoInit==0) return 2;
 	else return -1;
@@ -248,9 +248,10 @@ int Principal::max(int nuevaRaiz){
 				datoInit = nuevaRaiz;
 				datoInit -= pow(opcs[i],2);
 				llenarVector(datoInit);
-				if(bandAux){
-					auxopc = Principal::minMax(datoInit);
-				}
+				if(bandAux){/////////
+					auxopc = Principal::minMax(datoInit);/////////
+					break;
+				}//////
 				
 				if(auxopc<minimun) minimun = auxopc;
 			
@@ -273,9 +274,10 @@ int Principal::minMax(int nuevaRaiz){
 				numOpc = opcs[i];
 				return 1;
 			}else {
+				
 				numOpc = rand()%opcs.size()+3;
-				cout<<"Dato: "<<numOpc<<endl;
-				return ; //un valor q me retorne y no me modifique el valor de numOpc;
+				//cout<<"Dato: "<<numOpc<<endl;
+				return 0; //un valor q me retorne y no me modifique el valor de numOpc;
 			}
 		}
 
