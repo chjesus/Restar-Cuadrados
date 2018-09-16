@@ -248,9 +248,9 @@ int Principal::max(int nuevaRaiz){
 				datoInit = nuevaRaiz;
 				datoInit -= pow(opcs[i],2);
 				llenarVector(datoInit);
-				if(bandAux){
-					auxopc = Principal::minMax(datoInit);
-				}
+//				if(bandAux){
+//					auxopc = Principal::minMax(datoInit);
+//				}
 				
 				if(auxopc<minimun) minimun = auxopc;
 			
@@ -275,7 +275,7 @@ int Principal::minMax(int nuevaRaiz){
 			}else {
 				numOpc = rand()%opcs.size()+3;
 				cout<<"Dato: "<<numOpc<<endl;
-				return ; //un valor q me retorne y no me modifique el valor de numOpc;
+				return 1; //un valor q me retorne y no me modifique el valor de numOpc;
 			}
 		}
 
