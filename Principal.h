@@ -10,12 +10,11 @@
 using namespace std;
 class Principal{
 	vector<int> opcs;
-	vector<int> auxPos;
+	vector<int> jugadasValidas;
+	vector<int> jugadasFatales;
 	
 	int datoInit;
 	int numOpc;
-	
-	bool bandAux;
 	
 	char resp;
 	public:
@@ -27,8 +26,6 @@ class Principal{
 		int validarJugada(int op);
 		
 		int min(int datoInitAux);
-		int max(int datoInitAux);
-		int minMax(int datoInitAux);
 		
 		int player();
 		int pc();
@@ -36,7 +33,6 @@ class Principal{
 };
 
 void Principal::main(){
-	bandAux = true;
 	bool band = true;
 	char tecla;
 	
@@ -158,15 +154,18 @@ int Principal::player(){
 int Principal::pc(){
 	
 	int datoInitAux=0;
+	int auxRandom = 0;
+	int minimun = 0;
 	
 	int auxopc;
-	int minimun = -1;
 	
+	srand(time(NULL));
+	jugadasValidas.clear();
+	jugadasFatales.clear();
 		cout<<endl<<endl<<"Juega la Maquina";
 		cout<<endl<<endl<<"Raiz: " << datoInit<<"| Tablero: "<<endl;
 		for(int i=0;i<opcs.size();i++){
 			cout<<opcs[i]<<"^2  ";
-			auxPos.push_back(opcs[i]);
 		}	
 		
 			for(int i=0;i<opcs.size();i++){
@@ -181,21 +180,33 @@ int Principal::pc(){
 					datoInit -= pow(opcs[i],2);
 					llenarVector(datoInit);
 					auxopc = Principal::min(datoInit);
-					if(auxopc>minimun){
+					if(auxopc>=minimun){
 						minimun = auxopc;
-						numOpc = opcs[i];
+						jugadasValidas.push_back(opcs[i]);
+					}else{
+						jugadasFatales.push_back(opcs[i]);
 					}
 					datoInit = datoInitAux;
 					llenarVector(datoInit);
 				}
 			}
-
-	datoInitAux = datoInit;
-	datoInit -= pow(numOpc,2);
-	cout<<endl<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
-	
-	//bandAux = true;//////
-	
+			if(opcs.size()==1){
+				datoInitAux = datoInit;
+				datoInit -= pow(numOpc,2);
+				cout<<endl<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
+			}else {
+				if(jugadasValidas.size()>0){
+					auxRandom = rand()%jugadasValidas.size();
+					numOpc = jugadasValidas[auxRandom];
+				}else{
+					auxRandom = rand()%jugadasFatales.size();
+					numOpc = jugadasFatales[auxRandom];
+				}
+				datoInitAux = datoInit;
+				datoInit -= pow(numOpc,2);
+				cout<<endl<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
+			}
+			
 	if(datoInit==0) return 2;
 	else return -1;
 }
@@ -209,76 +220,17 @@ int Principal::min(int nuevaRaiz){
 	if(nuevaRaiz==0) return 1;
 	
 	int auxopc;
-	int maximun = 1;
-
-		for(int i=0;i<opcs.size();i++){
-			if(validarJugada(opcs[opcs.size()-1])==0){
-				return -2;
-			}else if(opcs.size()==1){
-				numOpc = opcs[i];
-				return 1;
-			}else if(validarJugada(opcs[i])==1){
-				datoInit = nuevaRaiz;
-				datoInit -= pow(opcs[i],2);
-				llenarVector(datoInit);
-				auxopc = Principal::max(datoInit);
-				
-				if(auxopc>maximun)	maximun = auxopc;
-				
-				datoInit = nuevaRaiz;
-				llenarVector(datoInit);
-			}
-		}
-	return maximun;
-}
-
-int Principal::max(int nuevaRaiz){
-	if(nuevaRaiz==0) return 0;
 	
-	int auxopc;
-	int minimun = 2;
 		for(int i=0;i<opcs.size();i++){
 			if(validarJugada(opcs[opcs.size()-1])==0){
-				return -2;
+				return -1;
 			}else if(opcs.size()==1){
 				numOpc = opcs[i];
-				return 2;
-			}else if(validarJugada(opcs[i])==1){
-				datoInit = nuevaRaiz;
-				datoInit -= pow(opcs[i],2);
-				llenarVector(datoInit);
-				if(bandAux){
-					auxopc = Principal::minMax(datoInit);
-					break;
-				}
-
-				
-				if(auxopc<minimun) minimun = auxopc;
-			
-				datoInit = nuevaRaiz;
-				llenarVector(datoInit);
-			}
-		}
-	return minimun;
-}
-
-int Principal::minMax(int nuevaRaiz){
-	if(nuevaRaiz==0) return 1;
-	int auxopc;
-	int maximun = 1;
-	srand(time(NULL));
-		for(int i=0;i<opcs.size();i++){
-			if(validarJugada(opcs[opcs.size()-1])==0){
-				return -2;
-			}else if(opcs.size()==1){
-				numOpc = opcs[i];
+				return -1;
+			}else{
 				return 1;
-			}else {
-				numOpc = rand()%auxPos.size()+1;
-				return 1; //un valor q me retorne y no me modifique el valor de numOpc;
-
 			}
 		}
-
 }
+
 #endif
