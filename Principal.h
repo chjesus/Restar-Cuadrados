@@ -195,7 +195,7 @@ int Principal::pc(){
 				datoInit -= pow(numOpc,2);
 				cout<<endl<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
 			}else {
-				if(jugadasValidas.size()>0){
+				if(jugadasValidas.size()>1){
 					auxRandom = rand()%jugadasValidas.size();
 					numOpc = jugadasValidas[auxRandom];
 				}else{
@@ -217,10 +217,8 @@ int Principal::validarJugada(int op){
 }
 
 int Principal::min(int nuevaRaiz){
-	if(nuevaRaiz==0) return 1;
-	
-	int auxopc;
-	
+//	if(nuevaRaiz==0) return 1;
+
 		for(int i=0;i<opcs.size();i++){
 			if(validarJugada(opcs[opcs.size()-1])==0){
 				return -1;
