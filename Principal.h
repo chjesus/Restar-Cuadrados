@@ -6,6 +6,16 @@
 #include <vector>
 #include <time.h>
 #include <math.h>
+#include <windows.h>
+
+void gotoxy(int x, int y){
+	
+	HANDLE hcon = GetStdHandle(STD_OUTPUT_HANDLE);
+	COORD dwPos;
+	dwPos.X = x;
+	dwPos.Y = y;
+	SetConsoleCursorPosition(hcon, dwPos);
+}
 
 using namespace std;
 class Principal{
@@ -18,6 +28,7 @@ class Principal{
 	
 	char resp;
 	public:
+		void menuP();
 		void main();
 		void llenarVector(int datoInit);
 		void initJugador();
@@ -37,15 +48,33 @@ void Principal::main(){
 	srand(time(NULL));
 
 	do{
-		cout<<"1.- Ingresar dato inicial."<<endl;
-		cout<<"2.- Dato inicial Random."<<endl;
-		cout<<"3.- Salir.";
+		for(int i = 15; i < 50+15; i++){
+			gotoxy(i,3);
+			cout << "*";
+			gotoxy(i,21);
+			cout << "*";
+
+		}
+						
+		for(int i = 4; i < 17+4; i++){
+			gotoxy(15,i);
+			cout << "*\t\t\t\t\t\t*"<<endl;
+		}
+	
+		gotoxy(20,10);
+		menuP();
+	
 		tecla = getch();
+
 		switch(tecla){
 			case '1':
 				do{
 					system("cls");
-					cout<<"Ingrese un dato inicial entre 10 - 1000 : ";
+					
+					for(int i = 0; i < 80; i++){
+						cout << "*";
+					}					
+					cout<<"\n Ingrese un dato inicial entre 10 - 1000 : ";
 					cin>>datoInit;
 					if(datoInit<10 || datoInit>1000){
 						cout<<endl<<"El dato no esta en el rango requerido!"<<endl;
@@ -60,8 +89,13 @@ void Principal::main(){
 				break;
 			case '2':
 				system("cls");
+				
+					for(int i = 0; i < 80; i++){
+						cout << "*";
+					}		
 				datoInit = rand()%990+10;
 				Principal::llenarVector(datoInit);
+				cout << endl << " ";				
 				Principal::jugar();
 				cout<<endl;
 				system("PAUSE");
@@ -98,6 +132,9 @@ void Principal::llenarVector(int datoInit){
 
 void Principal::jugar(){
 	int win;
+	
+
+	cout << endl;
 	cout<<"Deseas Iniciar usted? s/n: ";
 	cin>>resp;
 	if(resp=='s' || resp=='S'){
@@ -116,16 +153,26 @@ void Principal::jugar(){
 		}while(datoInit!=0);
 	}
 	
-	if(win==1) cout<<endl<<endl<<"Gano el Jugador";
-	else cout<<endl<<endl<<"Gano la Maquina;";
+	if(win==1){
+		cout<<endl<<"\t\t******Gano el Jugador******"<< endl;
+		for(int i = 0; i < 79; i++)
+		cout << "-";
+	} 
+	else {
+		cout<<endl<<"\t\t******Gano la Maquina*******"<< endl;
+		for(int i = 0; i < 79; i++)
+		cout << "-";
+	}
 }
 
 int Principal::player(){
+	system("color F1");
 	int datoInitAux;
 	int numOpc=0;
 	bool band;
 		
 	do{
+		
 		cout<<endl<<endl<<"Tu Turno";
 		cout<<endl<<endl<<"Raiz: "<<datoInit<<" | Tablero: "<<endl;
 		for(int i=0;i<opcs.size();i++){
@@ -148,14 +195,17 @@ int Principal::player(){
 	
 	datoInitAux = datoInit;
 	datoInit -= pow(numOpc,2);
-	cout<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
-	
+	cout<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit << endl;
+	for(int i = 0; i < 79; i++)
+	cout << "-";
+	cout << endl;
 	if(datoInit==0) return 1;
 	else return -1;
 }
 
 int Principal::pc(){
 	
+	system("color F4");
 	int datoInitAux=0;
 	int auxRandom = 0;
 	int minimun = 0;
@@ -165,7 +215,8 @@ int Principal::pc(){
 	srand(time(NULL));
 	jugadasValidas.clear();
 	jugadasFatales.clear();
-		cout<<endl<<endl<<"Juega la Maquina";
+		
+		cout<<endl<<"Juega la Maquina";
 		cout<<endl<<endl<<"Raiz: " << datoInit<<"| Tablero: "<<endl;
 		for(int i=0;i<opcs.size();i++){
 			cout<<opcs[i]<<"^2  ";
@@ -210,7 +261,11 @@ int Principal::pc(){
 			
 			datoInitAux = datoInit;
 			datoInit -= pow(numOpc,2);
-			cout<<endl<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
+			cout<<endl<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit << endl;
+				for(int i = 0; i < 79; i++)
+				cout << "-";
+				getch();
+
 	if(datoInit==0) return 2;
 	else return -1;
 }
@@ -226,6 +281,16 @@ int Principal::min(int nuevaRaiz){
 				return 1;
 			}
 		}
+}
+
+void Principal::menuP(){
+		
+		system("color F0");
+		cout<<"1.- Ingresar dato inicial."<<endl;
+		gotoxy(20,11);
+		cout<<"2.- Dato inicial Random."<<endl;
+		gotoxy(20,12);
+		cout<<"3.- Salir.";
 }
 
 #endif
