@@ -15,8 +15,11 @@ class Principal{
 	vector<int> playerGana; //Jugador Puede Ganar en el siguiente turno
 	
 	int datoInit;
-	char resp;
+	int numOpc;
 	
+	bool band;
+	
+	char resp;
 	public:
 		void main();
 		void llenarVector(int datoInit);
@@ -24,8 +27,10 @@ class Principal{
 		void jugar();
 		
 		int validarJugada(int op);
-		int min(int datoInitAux,int op);
-		int max(int datoInitAux,int op);
+		
+		int min(int datoInitAux);
+		int max(int datoInitAux);
+		int minMax(int datoInitAux);
 		
 		int player();
 		int pc();
@@ -119,9 +124,9 @@ void Principal::jugar(){
 
 int Principal::player(){
 	int datoInitAux;
-	int numOpc;
+	int numOpc=0;
 	bool band;
-	
+		
 	do{
 		cout<<endl<<endl<<"Tu Turno";
 		cout<<endl<<endl<<"Raiz: "<<datoInit<<" | Tablero: "<<endl;
@@ -144,7 +149,7 @@ int Principal::player(){
 	}while(!band);
 	
 	datoInitAux = datoInit;
-	datoInit -= numOpc*numOpc;
+	datoInit -= pow(numOpc,2);
 	cout<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
 	
 	if(datoInit==0) return 1;
@@ -153,14 +158,12 @@ int Principal::player(){
 
 int Principal::pc(){
 	
-	int datoInitAux;
-	int numOpc;
-	bool band;
+	int datoInitAux=0;
 	
 	int auxopc;
-	int minimun = -999;
+	int minimun = -1;
 	
-	srand(time(NULL));
+	band = true;
 	
 	cout<<endl<<endl<<"Juega la Maquina";
 	cout<<endl<<endl<<"Raiz: " << datoInit<<"| Tablero: "<<endl;
@@ -168,25 +171,24 @@ int Principal::pc(){
 		cout<<opcs[i]<<"^2  ";
 	}	
 		for(int i=0;i<opcs.size();i++){
-			if(validarJugada(opcs[i])==0){
+			if(validarJugada(opcs[opcs.size()-1])==0){
+				numOpc = opcs[opcs.size()-1];
+				break;
+			}else if(opcs.size()==1){
 				numOpc = opcs[i];
 				break;
 			}else if(validarJugada(opcs[i])==1){
 				datoInitAux = datoInit;
 				datoInit -= pow(opcs[i],2);
 				llenarVector(datoInit);
-				auxopc = Principal::min(datoInit,opcs[i]);
+				auxopc = Principal::min(datoInit);
 				if(auxopc>minimun){
 					minimun = auxopc;
 					numOpc = opcs[i];
 				}
 				datoInit = datoInitAux;
 				llenarVector(datoInit);
-			}/*else if(validarJugada(opcs[i])==-1){
-//				int r = rand()%opcs.size();
-//				numOpc = opcs[r];
-//				break;			
-			}*/
+			}
 		}
 
 	datoInitAux = datoInit;
@@ -199,52 +201,82 @@ int Principal::pc(){
 
 int Principal::validarJugada(int op){
 	if(pow(op,2)==datoInit) return 0;
-//	if(opcs.size()>5) return -1;
-	return 1;
+	else return 1;
 }
 
-int Principal::min(int nuevaRaiz,int op){
-	if(nuevaRaiz==0 || datoInit==0) return 0;
+int Principal::min(int nuevaRaiz){
+	if(nuevaRaiz==0) return 1;
 	
 	int auxopc;
-	int maximun = 1001;
+	int maximun = 1;
+
 		for(int i=0;i<opcs.size();i++){
-			if(validarJugada(opcs[i])==0){
-				op = opcs[i];
-				break;
+			if(validarJugada(opcs[opcs.size()-1])==0){
+				return -2;
+			}else if(opcs.size()==1){
+				numOpc = opcs[i];
+				return 1;
 			}else if(validarJugada(opcs[i])==1){
 				datoInit = nuevaRaiz;
 				datoInit -= pow(opcs[i],2);
 				llenarVector(datoInit);
-				auxopc = Principal::max(datoInit,opcs[i]);
-				if(auxopc<maximun){
-					maximun = auxopc;
-					op = opcs[i];
-				}
+				auxopc = Principal::max(datoInit);
+				
+				if(auxopc>maximun)	maximun = auxopc;
+				
+				datoInit = nuevaRaiz;
+				llenarVector(datoInit);
 			}
 		}
 	return maximun;
 }
-int Principal::max(int nuevaRaiz,int op){
-	if(nuevaRaiz==0 || datoInit==0) return 0;
+
+int Principal::max(int nuevaRaiz){
+	if(nuevaRaiz==0) return 0;
 	
 	int auxopc;
-	int minimun = -999;
+	int minimun = 2;
 		for(int i=0;i<opcs.size();i++){
-			if(validarJugada(opcs[i])==0){
-				op = opcs[i];
-				break;
+			if(validarJugada(opcs[opcs.size()-1])==0){
+				return -2;
+			}else if(opcs.size()==1){
+				numOpc = opcs[i];
+				return 2;
 			}else if(validarJugada(opcs[i])==1){
 				datoInit = nuevaRaiz;
 				datoInit -= pow(opcs[i],2);
 				llenarVector(datoInit);
-				auxopc = Principal::min(datoInit,opcs[i]);
-				if(auxopc>minimun){
-					minimun = auxopc;
-					op = opcs[i];
-				}
+//				if(band){
+//					auxopc = Principal::minMax(datoInit);
+//				}
+				
+				if(auxopc<minimun) minimun = auxopc;
+			
+				datoInit = nuevaRaiz;
+				llenarVector(datoInit);
 			}
 		}
 	return minimun;
+}
+
+int Principal::minMax(int nuevaRaiz){
+	if(nuevaRaiz==0) return 1;
+	int auxopc;
+	int maximun = 1;
+	srand(time(NULL));
+		for(int i=0;i<opcs.size();i++){
+			if(validarJugada(opcs[opcs.size()-1])==0){
+				return -2;
+			}else if(opcs.size()==1){
+				numOpc = opcs[i];
+				return 1;
+			}else {
+				band = false;
+				numOpc = 5;
+				return 1;
+
+			}
+		}
+	return maximun;
 }
 #endif
