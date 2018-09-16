@@ -8,6 +8,9 @@
 #include <math.h>
 #include <windows.h>
 
+#define LIGHT_PURPLE     0xD
+#define GREEN            0x2
+
 void gotoxy(int x, int y){
 	
 	HANDLE hcon = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -15,6 +18,15 @@ void gotoxy(int x, int y){
 	dwPos.X = x;
 	dwPos.Y = y;
 	SetConsoleCursorPosition(hcon, dwPos);
+}
+
+void textbgcolor(WORD textcolor, WORD bgcolor){
+    WORD color = (bgcolor & 0xF) << 4 | (textcolor & 0xF);
+    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    SetConsoleTextAttribute (hConsole, color);
+}
+void textcolor(WORD textcolor){
+    textbgcolor(textcolor, 255);
 }
 
 using namespace std;
@@ -166,13 +178,13 @@ void Principal::jugar(){
 }
 
 int Principal::player(){
-	system("color F1");
+//	system("color F1");
 	int datoInitAux;
 	int numOpc=0;
 	bool band;
 		
 	do{
-		
+		textcolor(GREEN);
 		cout<<endl<<endl<<"Tu Turno";
 		cout<<endl<<endl<<"Raiz: "<<datoInit<<" | Tablero: "<<endl;
 		for(int i=0;i<opcs.size();i++){
@@ -205,7 +217,7 @@ int Principal::player(){
 
 int Principal::pc(){
 	
-	system("color F4");
+//	system("color F4");
 	int datoInitAux=0;
 	int auxRandom = 0;
 	int minimun = 0;
@@ -215,7 +227,8 @@ int Principal::pc(){
 	srand(time(NULL));
 	jugadasValidas.clear();
 	jugadasFatales.clear();
-		
+	
+		textcolor(LIGHT_PURPLE);
 		cout<<endl<<"Juega la Maquina";
 		cout<<endl<<endl<<"Raiz: " << datoInit<<"| Tablero: "<<endl;
 		for(int i=0;i<opcs.size();i++){
@@ -264,7 +277,6 @@ int Principal::pc(){
 			cout<<endl<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit << endl;
 				for(int i = 0; i < 79; i++)
 				cout << "-";
-				getch();
 
 	if(datoInit==0) return 2;
 	else return -1;
