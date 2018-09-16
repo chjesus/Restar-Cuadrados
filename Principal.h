@@ -171,9 +171,13 @@ int Principal::pc(){
 			for(int i=0;i<opcs.size();i++){
 				if(validarJugada(opcs[opcs.size()-1])==0){
 					numOpc = opcs[opcs.size()-1];
-					break;
+					datoInitAux = datoInit;
+					datoInitAux -= pow(numOpc,2);
+					break; 
 				}else if(opcs.size()==1){
 					numOpc = opcs[i];
+					datoInitAux = datoInit;
+					datoInitAux -= pow(numOpc,2); 
 					break;
 				}else if(validarJugada(opcs[i])==1){
 					datoInitAux = datoInit;
@@ -190,23 +194,20 @@ int Principal::pc(){
 					llenarVector(datoInit);
 				}
 			}
-			if(opcs.size()==1){
-				datoInitAux = datoInit;
-				datoInit -= pow(numOpc,2);
-				cout<<endl<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
-			}else {
-				if(jugadasValidas.size()>1){
+
+			if(datoInitAux!=0 && opcs.size()>1){
+				if(jugadasValidas.size()>0){
 					auxRandom = rand()%jugadasValidas.size();
 					numOpc = jugadasValidas[auxRandom];
 				}else{
 					auxRandom = rand()%jugadasFatales.size();
 					numOpc = jugadasFatales[auxRandom];
 				}
-				datoInitAux = datoInit;
-				datoInit -= pow(numOpc,2);
-				cout<<endl<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
 			}
 			
+			datoInitAux = datoInit;
+			datoInit -= pow(numOpc,2);
+			cout<<endl<<"Resultado: "<<datoInitAux<<" - "<<numOpc<<"^2 = "<<datoInit;
 	if(datoInit==0) return 2;
 	else return -1;
 }
